@@ -1,0 +1,58 @@
+/* 
+  各种文字颜色
+ */
+$basic-white: #fff;
+$basic-black: #000;
+$basic-font-family: '';
+
+// 白色
+@mixin font-white {
+  font-family: $basic-font-family;
+  color: $basic-white;
+}
+
+@mixin font-white-title {
+  @include font-white;
+  opacity: 0.85;
+}
+
+@mixin font-white-primary {
+  @include font-white;
+  opacity: 0.65;
+}
+
+@mixin font-white-secondary {
+  @include font-white;
+  opacity: 0.45;
+}
+
+@mixin font-white-disable {
+  @include font-white;
+  opacity: 0.30;
+}
+
+// 黑色
+@mixin font-black {
+  font-family: $basic-font-family;
+  color: $basic-black;
+}
+
+@mixin font-black-title {
+  @include font-black;
+  opacity: 0.85;
+}
+
+@mixin font-black-primary {
+  @include font-black;
+  opacity: 0.65;
+}
+
+@mixin font-black-secondary {
+  @include font-black;
+  opacity: 0.45;
+}
+
+@mixin font-black-disable {
+  @include font-black;
+  opacity: 0.30;
+}

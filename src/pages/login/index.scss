@@ -1,0 +1,78 @@
+@import "@style";
+
+.login {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &-content {
+    flex: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-footer {
+    flex: 1;
+  }
+
+  &-step {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 64px;
+    box-sizing: border-box;
+
+    &-title {
+      margin-bottom: 96px;
+
+      &-text {
+        @include font-black-primary;
+        font-size: 54px;
+        font-weight: bold;
+      }
+    }
+
+    &-content {
+      position: relative;
+      width: 100%;
+      left: -16px;
+
+      &-input-mask {
+        position: absolute;
+        width: 100%;
+        height: 96px;
+        background-color: red;
+        opacity: 0;
+        z-index: 200;
+      }
+    }
+
+    &-btn {
+      margin-top: 72px;
+      width: 100%;
+    }
+
+    &-waiting {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &-enter-remark {
+      width: 100%;
+      margin-top: 64px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+
+      &-text {
+        @include font-black-secondary;
+        font-size: 34px;
+      }
+    }
+  }
+}

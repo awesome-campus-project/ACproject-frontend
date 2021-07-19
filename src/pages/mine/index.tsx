@@ -1,18 +1,25 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text, OpenData } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 
 import { RootState, UserInfo } from '@types'
+import { emptyUserInfo } from '@actions'
 import './index.scss'
 
 const Home: React.FC<any> = () => {
+  const dispatch = useDispatch()
   const userInfo: UserInfo = useSelector((state: RootState) => state.userInfo)
 
   const handleLogout = () => {
+    dispatch(emptyUserInfo())
     Taro.clearStorage()
     Taro.reLaunch({ url: '/pages/home/index' })
+  }
+
+  const handleLogin = () => {
+    Taro.navigateTo({ url: '/pages/login/index' })
   }
 
   return (
@@ -30,10 +37,18 @@ const Home: React.FC<any> = () => {
           </View>
         </View>
       </View>
-      <AtButton
-        type='primary'
-        onClick={handleLogout}
-      >退出登录</AtButton>
+      {
+        userInfo.name ?
+          <AtButton
+            type='primary'
+            onClick={handleLogout}
+          >退出登录</AtButton>
+          :
+          <AtButton
+            type='primary'
+            onClick={handleLogin}
+          >登录</AtButton>
+      }
     </View>
   )
 }

@@ -1,4 +1,29 @@
-.index {
-  flex-direction: column;
+@import "@style";
+
+.home {
+  height: 100%;
   width: 100%;
+  position: relative;
+
+  &-content {
+    padding: 32px;
+  }
+
+  &-add {
+    position: absolute;
+    right: 64px;
+    bottom: 64px;
+    background-color: #ddd;
+    height: 100px;
+    width: 100px;
+    border-radius: 50px;
+    font-size: 60px;
+    text-align: center;
+    line-height: 94px;
+    @include font-black-primary;
+
+    &_active {
+      opacity: 0.5;
+    }
+  }
 }

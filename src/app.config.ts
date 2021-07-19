@@ -1,14 +1,18 @@
 export default {
   pages: [
-    'pages/login/index',
+    
     'pages/home/index',
     'pages/mine/index',
-    // 'pages/index/index',
+
+    'pages/order/index',
+    'pages/order-edit/index',
+    
+    'pages/login/index',
   ],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: '取快递了吗',
+    navigationBarTitleText: '',
     navigationBarTextStyle: 'black'
   },
   tabBar: {

@@ -1,24 +1,25 @@
 import {
-  ADD,
-  MINUS
-} from '../constants/counter'
+  UPDATE,
+  EMPTY,
+} from '@constants/userInfo'
 
-export const add = () => {
+export const updateUserInfo = (userInfo) => {
   return {
-    type: ADD
+    type: UPDATE,
+    payload: userInfo,
   }
 }
-export const minus = () => {
+export const emptyUserInfo = () => {
   return {
-    type: MINUS
+    type: EMPTY,
   }
 }
 
-// 异步的action
-export function asyncAdd () {
-  return dispatch => {
-    setTimeout(() => {
-      dispatch(add())
-    }, 2000)
-  }
-}
+// // 异步的action
+// export function asyncAdd () {
+//   return dispatch => {
+//     setTimeout(() => {
+//       dispatch(add())
+//     }, 2000)
+//   }
+// }

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text, Picker, Image } from '@tarojs/components'
 import { AtSteps, AtInput, AtButton, AtMessage } from 'taro-ui'
 
 import { POST, GET } from '@utils/request'
+import { updateUserInfo } from '@actions'
 import { waitingImg } from '@assets/image'
 import './index.scss'
 
 const Home: React.FC<any> = () => {
+  const dispatch = useDispatch()
   const [step, setStep] = useState<{
     index: number,
     items: { title: string, status?: "error" | "success" }[]
@@ -31,8 +34,15 @@ const Home: React.FC<any> = () => {
   const [userInfo, setUserInfo] = useState<any>({})
   const [register, setRegister] = useState(false)
 
-  // 获取campus列表的effect
   useEffect(() => {
+    // 隐藏home按钮
+    Taro.hideHomeButton()
+    Taro.showToast({
+      title: '请登录',
+      icon: 'none',
+      duration: 2000
+    })
+    // 获取campus列表
     GET('/campuses')
       .then(res => {
         setCampus({
@@ -46,7 +56,7 @@ const Home: React.FC<any> = () => {
   const handleLogin = async () => {
     if (!username || !password) {
       Taro.atMessage({
-        message: '请填写表单～',
+        message: '请填写表单',
         type: 'warning',
       })
       return
@@ -65,12 +75,14 @@ const Home: React.FC<any> = () => {
     })
     Taro.hideLoading()
     if (!res.data.success) {
+      // 登录失败
       Taro.atMessage({
         message: res.data.msg || '未知错误',
         type: 'error',
       })
       return
     }
+    // 登录成功
     Taro.atMessage({
       message: '登录成功',
       type: 'success',
@@ -86,11 +98,11 @@ const Home: React.FC<any> = () => {
     })
   }
 
-  // 确认个人信息，进行注册
+  // 确认个人信息，进行用户注册
   const handleConfirm = () => {
     if (!userInfo.user_name) {
       Taro.atMessage({
-        message: '请先登录教务～',
+        message: '请先登录教务',
         type: 'warning',
       })
       return
@@ -99,7 +111,8 @@ const Home: React.FC<any> = () => {
       title: '加载中',
       mask: true,
     })
-    POST('/users', {
+    // 新增用户
+    const newUser = {
       name: userInfo.user_name,
       user_code: username,
       level: parseInt(userInfo.adminclass_name.split('-')[0].slice(-2)),
@@ -107,26 +120,49 @@ const Home: React.FC<any> = () => {
       major: userInfo.major_name,
       depart: userInfo.depart_name,
       campus_name: '合肥工业大学屯溪路校区',
-    })
-    .then(res => {
-      Taro.hideLoading()
-      if (res.statusCode === 201) {
-        setRegister(true)
-        setStep({
-          index: 2,
-          items: [
-            { title: '绑定学校', status: 'success' },
-            { title: '确认信息', status: 'success' },
-            { title: '开始探索' }
-          ]
-        })
-      } else {
-        Taro.atMessage({
-          message: '验证失败，请重试～',
-          type: 'error',
-        })
-      }
-    })
+    }
+    POST('/users', newUser)
+      .then(res => {
+        Taro.hideLoading()
+        if (res.statusCode === 201) {
+          // 新增成功
+          Taro.atMessage({
+            message: '验证成功',
+            type: 'success',
+          })
+          setRegister(true)
+          setStep({
+            index: 2,
+            items: [
+              { title: '绑定学校', status: 'success' },
+              { title: '确认信息', status: 'success' },
+              { title: '开始探索' }
+            ]
+          })
+          // 将个人信息存储在小程序本地缓存
+          const userInfoState = {
+            ...newUser,
+            campus_id: campus.list[campus.selected].id,
+            username,
+            password,
+          }
+          Taro.setStorage({
+            key: 'userInfo',
+            data: userInfoState
+          })
+          // 更新store
+          dispatch(updateUserInfo(userInfoState))
+          // 跳转回首页
+          setTimeout(() => {
+            Taro.navigateBack()
+          }, 1500);
+        } else {
+          Taro.atMessage({
+            message: '验证失败，请重试',
+            type: 'error',
+          })
+        }
+      })
   }
 
   const handleCampusChange = e => {
@@ -137,6 +173,8 @@ const Home: React.FC<any> = () => {
   }
 
   let Content
+
+  // 登录阶段
   if (step.index === 0) {
     Content = (
       <View className='login-step'>
@@ -164,7 +202,7 @@ const Home: React.FC<any> = () => {
             name='username'
             title='学号'
             type='number'
-            placeholder='请输入学号'
+            placeholder='请输入教务学号'
             value={username}
             onChange={e => setUsername(e as string)}
           />
@@ -172,7 +210,7 @@ const Home: React.FC<any> = () => {
             name='password'
             title='密码'
             type='password'
-            placeholder='请输入密码'
+            placeholder='请输入教务密码'
             value={password}
             onChange={e => setPassword(e as string)}
           />
@@ -184,7 +222,8 @@ const Home: React.FC<any> = () => {
         >登录</AtButton>
       </View>
     )
-  } else if (step.index === 1) {
+  }  // 进入验证阶段
+  else if (step.index === 1) {
     Content = (
       <View className='login-step'>
         <View className='login-step-title'>
@@ -241,7 +280,9 @@ const Home: React.FC<any> = () => {
         </AtButton>
       </View>
     )
-  } else {
+  }
+  // 跳转等待页面
+  else {
     Content = (
       <View className='login-step'>
         <View className='login-step-waiting'>
@@ -251,7 +292,7 @@ const Home: React.FC<any> = () => {
           />
         </View>
         <View className='login-step-enter-remark'>
-          <Text  className='login-step-enter-remark-text'>{register ? '即将进入...' : '请先完成注册'}</Text>
+          <Text className='login-step-enter-remark-text'>{register ? '即将进入...' : '请先完成登录'}</Text>
         </View>
       </View>
     )
@@ -259,11 +300,9 @@ const Home: React.FC<any> = () => {
 
   return (
     <View className='login'>
-
       <View className='login-content'>
         {Content}
       </View>
-
       <View className='login-footer'>
         <AtSteps
           items={step.items}
@@ -274,9 +313,7 @@ const Home: React.FC<any> = () => {
           })}
         />
       </View>
-
       <AtMessage />
-
     </View>
   )
 }

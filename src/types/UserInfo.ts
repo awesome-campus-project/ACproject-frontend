@@ -1,4 +1,5 @@
 export interface UserInfo {
+  id?: number,
   name: string;
   user_code: string;
   level: number;

@@ -141,8 +141,7 @@ const Home: React.FC<any> = () => {
           })
           // 将个人信息存储在小程序本地缓存
           const userInfoState = {
-            ...newUser,
-            campus_id: campus.list[campus.selected].id,
+            ...res.data,
             username,
             password,
           }

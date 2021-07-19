@@ -37,6 +37,8 @@
   ],
   "author": "",
   "license": "MIT",
+
+
   "dependencies": {
     "@babel/runtime": "^7.7.7",
     "@tarojs/components": "3.0.9",
@@ -68,4 +70,6 @@
     "stylelint": "9.3.0",
     "typescript": "^3.7.0"
   }
+
+  
 }
